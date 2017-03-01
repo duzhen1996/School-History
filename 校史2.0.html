@@ -1,0 +1,572 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Untitled Document</title>
+</head>
+<script>
+//以下是一个一开始div的动画函数
+function begin()
+{
+	oDoor1 = document.getElementById('door1');
+	oDoor2 = document.getElementById('door2');
+	var timmer = null;
+	var timmer2 = null;
+	var timmer3 = null;
+	var t = 0.1;
+	var judge = 1;
+	var judge2 = 0;
+
+//以下是开
+
+	if(oDoor1.currentStyle && oDoor2.currentStyle)
+	{
+		if (judge == 1) 
+		{
+			timmer = setInterval( function()
+			{
+				if (oDoor1.offsetWidth  >= 70) 
+				{
+					oDoor1.runtimeStyle.width = (oDoor1.offsetWidth - t) + "px";
+					oDoor2.runtimeStyle.width = (oDoor2.offsetWidth - t) + "px";
+	
+					t = t * (12/11);
+				}
+				else
+				{
+					oDoor1.runtimeStyle.width =  "0px";
+					oDoor2.runtimeStyle.width =  "0px";
+					judge2 = 1;
+					//alert(judge);
+					clearInterval(timmer);
+
+				}
+			},5);
+			
+		}
+		
+	}
+	
+}
+	
+	
+//以上是第二次开合
+//以上是一个div的动画函数
+
+//以下是拼图的效果
+window.onload = function()
+{
+	var judge3 = 0;
+	//begin();
+	var choice = 5;
+	var oCon = document.getElementById('container');
+	var oCon2 = document.getElementById('container2');
+	var aDiv = oCon2.getElementsByTagName('div');
+	var oDraw = document.getElementById('draw');
+
+	//aDiv[0].style.left = (aDiv[0].offsetLeft + 68) + "px";
+	for(var i = 0 ; i< 3 ; i++ )
+	{
+		aDiv[i].style.left = (aDiv[i].offsetLeft + 68*i) + "px";
+	}
+	
+	for(var i = 3; i< 6; i++ )
+	{
+		aDiv[i].style.top = (aDiv[i].offsetTop + 68 )+"px";
+		
+		aDiv[i].style.left = (aDiv[i].offsetLeft + 68*(i - 3))+"px";
+	}
+	
+	for(var i = 6 ; i<9 ; i++)
+	{
+		aDiv[i].style.top = (aDiv[i].offsetTop + 68*2) + "px";
+		aDiv[i].style.left = (aDiv[i].offsetLeft + 68*( i - 6))+"px";
+	}
+	aDiv[choice].style.background = "#996600";
+
+	if (oDraw.setCapture)
+	{
+		oDraw.onmousedown = function(ev)
+		{
+			var oEvent = event||ev;
+			var y =document.documentElement.scrollTop||document.body.scrollTop;
+			disx = oEvent.clientX - oDraw.offsetLeft;
+			disy = oEvent.clientY - oDraw.offsetTop;
+
+
+			oDraw.onmousemove = function(ev)
+			{
+				var oEvent = ev||event;
+				oDraw.style.left = (oEvent.clientX - disx ) + "px";
+				oDraw.style.top = (oEvent.clientY - disy )+"px";//clientX、clientY可能就是关于父级div的坐标
+
+				if( (oEvent.clientX - oCon.offsetLeft >= aDiv[choice].offsetLeft+10) && (oEvent.clientX - oCon.offsetLeft <= aDiv[choice].offsetLeft + aDiv[choice].offsetWidth - 10) && 
+					(oEvent.clientY - oCon.offsetTop >= aDiv[choice].offsetTop+10) && (oEvent.clientY - oCon.offsetTop <= aDiv[choice].offsetTop + aDiv[choice].offsetHeight - 10))
+				{
+					oDraw.style.left = aDiv[choice].offsetLeft+"px";
+					oDraw.style.top = aDiv[choice].offsetTop+"px";
+				}
+				
+				oDraw.onmouseup = function(ev)
+				{
+					var oEvent = ev||event;
+
+					oDraw.onmousemove = null;
+					oDraw.onmouseup = null;
+
+					if ((oEvent.clientX - oCon.offsetLeft >= aDiv[choice].offsetLeft+10) && (oEvent.clientX - oCon.offsetLeft <= aDiv[choice].offsetLeft + aDiv[choice].offsetWidth - 10) && 
+					(oEvent.clientY - oCon.offsetTop >= aDiv[choice].offsetTop+10) && (oEvent.clientY - oCon.offsetTop <= aDiv[choice].offsetTop + aDiv[choice].offsetHeight - 10)) 
+					{
+						begin();
+						oCon.runtimeStyle.display="none";
+					}
+					else
+					{
+						oDraw.style.left = "68px";
+						oDraw.style.top = "68px";
+					}
+
+					oDraw.releaseCapture();
+				}
+			}
+			oDraw.setCapture();//要放在想要捕获的事件后面
+		}
+	}
+	else
+	{
+		oDraw.onmousedown = function(ev)
+		{
+			var oEvent = event||ev;
+			var y =document.documentElement.scrollTop||document.body.scrollTop;
+			disx = oEvent.clientX - oDraw.offsetLeft;
+			disy = oEvent.clientY - oDraw.offsetTop;
+
+			document.onmousemove = function(ev)
+			{
+				var oEvent = ev||event;
+				oDraw.style.left = (oEvent.clientX - disx ) + "px";
+				oDraw.style.top = (oEvent.clientY - disy )+"px";
+
+				if( (oEvent.clientX - oCon.offsetLeft >= aDiv[choice].offsetLeft+10) && (oEvent.clientX - oCon.offsetLeft <= aDiv[choice].offsetLeft + aDiv[choice].offsetWidth - 10) && 
+					(oEvent.clientY - oCon.offsetTop >= aDiv[choice].offsetTop+10) && (oEvent.clientY - oCon.offsetTop <= aDiv[choice].offsetTop + aDiv[choice].offsetHeight - 10))
+				{
+					oDraw.style.left = aDiv[choice].offsetLeft+"px";
+					oDraw.style.top = aDiv[choice].offsetTop+"px";
+				}
+
+				document.onmouseup = function(ev)
+				{
+					var oEvent = ev||event;
+
+					document.onmousemove = null;
+					document.onmouseup = null;
+
+					if ((oEvent.clientX - oCon.offsetLeft >= aDiv[choice].offsetLeft+10) && (oEvent.clientX - oCon.offsetLeft <= aDiv[choice].offsetLeft + aDiv[choice].offsetWidth - 10) && 
+					(oEvent.clientY - oCon.offsetTop >= aDiv[choice].offsetTop+10) && (oEvent.clientY - oCon.offsetTop <= aDiv[choice].offsetTop + aDiv[choice].offsetHeight - 10)) 
+					{
+						alert("正确");
+
+						begin();
+					}
+					else
+					{
+						oDraw.style.left = "68px";
+						oDraw.style.top = "68px";
+					}
+				}
+			}
+
+		}
+	}
+	//以上是拼图的效果
+
+	/* 以下是文本框的出现和消失效果 */
+	var oInput = document.getElementById("inusername");
+	var oWarning = document.getElementById("warning");
+	var oHelp = document.getElementById("help");
+	oInput .visible = false;
+
+	var timmer4 = null;
+
+	oInput.onfocus = function()
+	{
+		oWarning.style.display = "block";
+		
+		clearTimeout(timmer4);
+		
+		timmer4 = setTimeout( function()
+		{
+			oWarning.style.display = "none";
+		}, 3000);
+	}
+
+	oHelp.onmouseover = function()
+	{
+		oWarning.style.display = "block";
+		
+		clearTimeout(timmer4);
+		
+		timmer4 = setTimeout( function()
+		{
+			oWarning.style.display = "none";
+		}, 3000);
+	}
+	/* 以下是文本框的出现和消失效果 */
+
+	/*以下是点击登录后登录界面消失的样子*/
+	var oLoginB = document.getElementById("logbutton");
+	var oLogin = document.getElementById("login");
+	var timmer5 = null;
+	var timmer6 = null;
+	var t = 7;
+	var l = oLogin.offsetTop;
+	var oQuestion = document.getElementById("question");
+	var l = -1;
+	var lcount = 0;
+	var first = oLoginB.offsetLeft;
+	
+	oLoginB.onmouseover = function()
+	{
+		clearInterval(timmer6);
+		timmer6 = setInterval(function()
+		{
+			if( lcount <= 10 )
+			{
+				oLoginB.style.left = first + 2*l;
+				l = l*(-1);
+				lcount++;
+			}
+			else
+			{
+				clearInterval(timmer6);
+				oLoginB.style.left = first + "px";
+			}
+		},30)
+	}
+	
+	oLoginB.onclick = function()
+	{
+		timmer5 = setInterval(function()
+		{
+			if (t <= 40)
+			 {
+				t = t + 0.5;
+				/*oInput.value = t;*/
+				oLogin.style.top = -125-(l - ( 20*t - 0.05*t*t*t )) + "px";
+			}
+			else
+			{
+				clearInterval(timmer5);
+				oQuestion.style.display = "block";
+			}
+		}
+		, 15);
+	}
+	/*以上是点击登录后登录界面消失的样子*/
+
+	/*以下答题时的效果*/
+	/*以上答题时的效果*/
+	
+}
+
+
+</script>
+<style>
+
+#box
+{
+	position:absolute;
+	background:url(image/background.jpg);
+	width:1024px;
+	border:1px dashed #000;
+	height:768px;
+}
+#login
+{
+	position:absolute;
+	width:1024px;
+	/*border:1px dashed #000;*/
+	height:768px;
+}
+#door1
+{
+	position:absolute;
+	background:url(image/green.jpg);
+	width:512px;
+	height:768px;
+}
+#door2
+{
+	/*left:512px;*/
+	right:0px;
+	float:right;
+	position:absolute;
+	background:url(image/yellow.jpg);
+	width:512px;
+	height:768px;
+}
+#container
+{
+	position:absolute;
+	width:408px;
+	height:204px;
+	left:308px;
+	top: 282px;
+	background:#000;
+	z-index:9998;
+}
+.div2
+{
+	position:absolute;
+	width:68px;
+	height:68px;
+	left:204px;
+	background:#090;
+	
+}
+.div1
+{
+	position:absolute;
+	width:68px;
+	height:68px;
+	left:68px;
+	top:68px;
+	background:#F00;
+}
+#draw
+{
+	z-index:9999;
+}
+#title
+{
+	left:0px;
+	top:60px;
+	position:absolute;
+	width:310px;
+	/*height:78px;*/
+	border-bottom:4px dashed #000;
+	padding:5px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:36px;
+}
+#photo
+{
+	position:absolute;
+	width:422px;
+	height:565px;
+	background:url(image/login-photo.jpg);
+	top:156px;
+	left:41px;
+}
+
+#username
+{
+	width:310px;
+	/*height:63px;*/
+	top:261px;
+	left:559px;
+	border:2px dashed #000;
+	position:absolute;
+	padding:5px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:24px;
+}
+#password
+{
+	font-family:Microsoft YaHei,SimHei;
+	font-size:24px;
+	padding:5px;
+	width:310px;
+	/*background:url(image/login-password.jpg);*/
+	position:absolute;
+	top:359px;
+	left:559px;
+	border:2px dashed #000;
+}
+#logbutton
+{
+	width:110px;
+	/*height:93px;*/
+	top:454px;
+	position:absolute;
+	left:836px;
+	border:4px dashed #000;
+	padding:5px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:24px;
+}
+#help
+{
+	width:35px;
+	height:42px;
+	top:262px;
+	left:895px;
+	position:absolute;
+	border:2px solid #000;
+	padding:1px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:32px;
+}
+#warning
+{
+	width:237px;
+	height:103px;
+	background:url(image/warnning.jpg);
+	position:absolute;
+	left:590px;
+	top:449px;
+	display:none;
+}
+#inusername
+{
+	position:absolute;
+	left:100px;
+	top:7px;
+	height:25px;
+	width:177px;
+	background:url(image/background.jpg);
+}
+#inpassword
+{
+	position:absolute;
+	left:100px;
+	top:7px;
+	height:25px;
+	width:177px;
+	background:url(image/background.jpg);
+}
+#question
+{
+	position:absolute;
+	width:1024px;
+	height:768px;
+	display:none;
+}
+#last
+{
+	width:107px;
+	/*height:79px;*/
+	/*background:#0F0;*/
+	position:absolute;
+	bottom : 0px;
+	left:0px;
+	border:4px solid #000;
+	padding:5px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:24px;
+}
+#next
+{
+	width:107px;
+	/*height:79px;*/
+	/*background:#0F0;*/
+	position:absolute;
+	bottom : 0px;
+	right:0px;
+	border:4px solid #000;
+	padding:5px;
+	font-family:Microsoft YaHei, SimHei;
+	font-size:24px;
+}
+#Qblock
+{
+	top:74px;
+	position:absolute;
+	width:802px;
+	height:249px;
+	background:url(image/question-question.jpg);
+	left:114px;
+}
+#AnsA
+{
+	width:592px;
+	height:86px;
+	border:4px dashed #000;
+	position:absolute;
+	left:157px;
+	top:322px;
+}
+#AnsB
+{
+	width:592px;
+	height:86px;
+	border:4px dashed #000;
+	position:absolute;
+	left:285px;
+	top:423px;
+}
+#AnsC
+{
+	width:592px;
+	height:86px;
+	border:4px dashed #000;
+	position:absolute;
+	left:157px;
+	top:525px;
+}
+#AnsD
+{
+	width:592px;
+	height:86px;
+	border:4px dashed #000;
+	position:absolute;
+	top:625px;
+	left:285px;
+}
+
+#line
+{
+	border-left:4px dashed #000;
+	height:690px;
+	top:42px;
+	position:absolute;
+	width:1px;
+	left:500px;
+}
+	
+</style>
+<body unselectable="on" onselectstart="return false;">
+<div id="box">
+    <div id="login">
+    	<div id="line"></div>
+    	<div id="title">校史知识竞赛</div>
+        <div id="photo"></div>
+        <div id="username">用户名
+        	<input type="text" id="inusername">
+        </div>
+        <div id="password">密码
+        	<input type="text" id="inpassword">
+        </div>
+        <div id="logbutton">&nbsp;&nbsp;&nbsp;&nbsp;登陆</div>
+        <div id="help">&nbsp;?</div>
+        <div id="warning"></div>
+    </div>
+    <div id="question">
+    	<div id="next">下一题</div>
+        <div id="last">上一题</div>
+        <div id="Qblock"></div>
+        <div id="AnsA">这个是选项A</div>
+        <div id="AnsB">这个是选项B</div>
+        <div id="AnsC">这个是选项C</div>
+        <div id="AnsD">这个是选项D</div>
+    </div>
+    <div id="container">
+        <div class="div1" style="background:#000"></div>
+        <div class="div1" id="draw"></div>
+        <div id="container2">
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+            <div class="div2"></div>
+        </div>
+    </div>
+    <div id="door1"></div>
+    <div id="door2"></div>
+</div>
+</body>
+</html>
